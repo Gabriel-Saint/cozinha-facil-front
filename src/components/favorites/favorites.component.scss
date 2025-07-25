@@ -1,0 +1,57 @@
+section {
+  margin-bottom: 2.5rem;
+  padding-top: 2rem;
+}
+
+h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #444;
+}
+
+.favorites-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.favorite-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #EAEAEA;
+  border-radius: 25px;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  transition: all 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    background-color: #fffbf9;
+    border-color: #F87060;
+  }
+
+  .recipe-icon {
+    font-size: 1rem;
+  }
+
+  .favorite-card-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
+  }
+}
+
+.no-favorites-message {
+  background-color: #fff9e6;
+  border: 1px solid #ffeBae;
+  color: #8c6d1f;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-style: italic;
+}

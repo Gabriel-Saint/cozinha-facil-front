@@ -1,0 +1,133 @@
+.recipe-card {
+  background-color: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 1rem;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  cursor: pointer;
+
+  &.expanded {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border-color: #F87060;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  &:target {
+    border-color: #F87060;
+    box-shadow: 0 8px 30px rgba(248, 112, 96, 0.3);
+    transform: scale(1.02);
+  }
+}
+
+.recipe-summary {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.recipe-icon {
+  font-size: 1.8rem;
+  background-color: #fdfcfa;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.recipe-details {
+  flex-grow: 1;
+
+  h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: #333;
+  }
+}
+
+.recipe-meta {
+  display: flex;
+  gap: 1rem;
+  color: #666;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.favorite-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem;
+  margin-left: auto;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  .star-icon {
+    width: 24px;
+    height: 24px;
+    fill: #ccc;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  &:hover .star-icon {
+    fill: #bbb;
+  }
+
+  &.active .star-icon {
+    fill: #FFC107;
+    transform: scale(1.2);
+  }
+
+  &.active:hover .star-icon {
+    fill: #e6ac00;
+  }
+}
+
+.recipe-preparation {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #EAEAEA;
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+  animation: slideDown 0.3s ease-out;
+
+  &.hidden {
+    display: none;
+  }
+
+  h5 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+  }
+}
+
+.recipe-ingredients {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #eee;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

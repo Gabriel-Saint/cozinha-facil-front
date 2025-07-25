@@ -1,0 +1,32 @@
+<div class="recipe-card" [class.expanded]="isExpanded()" [id]="'recipe-' + recipe.id">
+  <div class="recipe-summary" (click)="toggleExpanded()">
+    <div class="recipe-icon">{{ recipe.icon || '🍽️' }}</div>
+    <div class="recipe-details">
+      <h4>{{ recipe.title }}</h4>
+      <div class="recipe-meta">
+        <span>🕒 {{ recipe.prepTime }}</span>
+        <span>🍴 Para {{ recipe.servings }}</span>
+      </div>
+    </div>
+    <button 
+      class="favorite-btn" 
+      [class.active]="isFavorited()"
+      (click)="onToggleFavorite($event)"
+      title="Favoritar receita"
+    >
+      <svg class="star-icon" viewBox="0 0 24 24">
+        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+      </svg>
+    </button>
+  </div>
+  
+  <div class="recipe-preparation" [class.hidden]="!isExpanded()">
+    <h5>Modo de Preparo:</h5>
+    <div [innerHTML]="formatPreparation(recipe.preparation)"></div>
+    
+    <div class="recipe-ingredients" *ngIf="recipe.ingredients">
+      <h5>Ingredientes:</h5>
+      <p>{{ recipe.ingredients }}</p>
+    </div>
+  </div>
+</div>

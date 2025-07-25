@@ -1,0 +1,30 @@
+<section id="recipes-section">
+  <div class="section-header">
+    <h3>Nosso Acervo de Receitas</h3>
+    <span class="section-tag">{{ filteredRecipes().length }} receitas</span>
+  </div>
+  
+  <div class="category-grid">
+    <div 
+      *ngFor="let category of categories()" 
+      class="category-card"
+      [class.active]="selectedCategory() === category.id"
+      (click)="onCategorySelect(category.id)"
+    >
+      <span *ngIf="category.emoji">{{ category.emoji }}</span>
+      {{ category.name }}
+    </div>
+  </div>
+  
+  <div class="recipes-list" *ngIf="filteredRecipes().length > 0">
+    <app-recipe-card 
+      *ngFor="let recipe of filteredRecipes()"
+      [recipe]="recipe"
+      (favoriteToggle)="onFavoriteToggle($event)"
+    ></app-recipe-card>
+  </div>
+  
+  <p id="no-results" class="no-results" *ngIf="filteredRecipes().length === 0">
+    Nenhuma receita encontrada para sua busca.
+  </p>
+</section>

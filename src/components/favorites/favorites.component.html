@@ -1,0 +1,18 @@
+<section id="favorites-section">
+  <h3>Minhas Receitas Favoritas</h3>
+  
+  <div class="favorites-list-container" *ngIf="favoriteRecipes().length > 0">
+    <a 
+      *ngFor="let recipe of favoriteRecipes()" 
+      class="favorite-card"
+      [href]="'#recipe-' + recipe.id"
+    >
+      <span class="recipe-icon">{{ recipe.icon || '🍽️' }}</span>
+      <span class="favorite-card-title">{{ recipe.title }}</span>
+    </a>
+  </div>
+  
+  <p class="no-favorites-message" *ngIf="favoriteRecipes().length === 0">
+    Clique na estrela ★ de uma receita para adicioná-la aqui!
+  </p>
+</section>

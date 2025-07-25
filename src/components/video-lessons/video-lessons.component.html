@@ -1,0 +1,13 @@
+<section id="video-lessons">
+  <h3>Aprenda com Nossas Videoaulas</h3>
+  <div class="video-grid">
+    <div class="video-card" *ngFor="let video of videos">
+      <iframe 
+        [src]="video.embedUrl" 
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
+      <h4>{{ video.title }}</h4>
+    </div>
+  </div>
+</section>
