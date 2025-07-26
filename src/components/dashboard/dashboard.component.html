@@ -1,8 +1,17 @@
-<app-header (searchChange)="onSearchChange($event)"></app-header>
+
+<app-header 
+  [searchTerm]="searchTerm()" 
+  (searchChange)="onSearchChange($event)"
+></app-header>
 
 <main class="container">
   <app-favorites (viewRecipe)="onViewFavorite($event)"></app-favorites>
-  <app-recipes-section [searchTerm]="searchTerm()"></app-recipes-section>
+  
+  <app-recipes-section 
+    [searchTerm]="searchTerm()" 
+    (clearSearch)="onClearSearch()"
+  ></app-recipes-section>
+  
   <app-video-lessons></app-video-lessons>
   <app-products></app-products>
 </main>
@@ -10,7 +19,6 @@
 <app-whatsapp-button></app-whatsapp-button>
 
 <app-recipe-modal 
-  *ngIf="selectedRecipeForModal()" 
   [recipe]="selectedRecipeForModal()" 
   (closeModal)="onCloseModal()"
 ></app-recipe-modal>

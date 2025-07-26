@@ -5,11 +5,12 @@
       <button class="btn-logout" (click)="onLogout()">Sair</button>
     </div>
     <div class="search-bar-container">
+      <!-- O ngModel agora está ligado ao @Input, e o (input) chama a nova função -->
       <input 
         type="text" 
         id="search-input" 
         [(ngModel)]="searchTerm"
-        (input)="onSearchInput($event)"
+        (input)="onSearchInput()"
         placeholder="Encontre a receita perfeita..."
       />
       <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#666">

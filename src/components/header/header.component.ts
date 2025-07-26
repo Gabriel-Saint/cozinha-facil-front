@@ -1,10 +1,10 @@
-import { Component, Output, EventEmitter, signal, OnInit, ElementRef } from '@angular/core';
+import { Component, Output, EventEmitter, signal, OnInit, ElementRef, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FavoriteService } from '../../services/favorite.service';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, map } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -14,9 +14,10 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+
+  @Input() searchTerm: string = ''; 
   @Output() searchChange = new EventEmitter<string>();
   
-  searchTerm = '';
   favoriteCount = signal<number>(0);
   private searchSubject = new Subject<string>();
 
@@ -24,7 +25,7 @@ export class HeaderComponent implements OnInit {
     private authService: AuthService,
     private favoriteService: FavoriteService,
     private router: Router,
-    private el: ElementRef 
+    private el: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -32,15 +33,15 @@ export class HeaderComponent implements OnInit {
     
     this.searchSubject.pipe(
       debounceTime(300),
+      map(term => term.trim().toLowerCase()),
       distinctUntilChanged()
-    ).subscribe(searchTerm => {
-      this.searchChange.emit(searchTerm);
+    ).subscribe(normalizedTerm => {
+      this.searchChange.emit(normalizedTerm);
     });
   }
 
-  onSearchInput(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.searchSubject.next(target.value);
+  onSearchInput(): void {
+    this.searchSubject.next(this.searchTerm);
   }
 
   onLogout(): void {
@@ -48,19 +49,13 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  /**
-   * @param sectionId O ID do elemento HTML para onde rolar.
-   */
   scrollToSection(sectionId: string): void {
     const element = document.getElementById(sectionId);
     if (element) {
-
       const headerElement = this.el.nativeElement.querySelector('.main-header') as HTMLElement;
       const headerHeight = headerElement ? headerElement.offsetHeight : 0;
-
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
-
       window.scrollTo({
         top: offsetPosition,
         behavior: 'smooth'

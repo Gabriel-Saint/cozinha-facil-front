@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, signal, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, signal, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Recipe, Category, RecipeFilters } from '../../models/recipe.model';
 import { RecipeService } from '../../services/recipe.service';
@@ -13,6 +13,7 @@ import { RecipeCardComponent } from '../recipe-card/recipe-card.component';
 })
 export class RecipesSectionComponent implements OnInit, OnChanges {
   @Input() searchTerm = '';
+  @Output() clearSearch = new EventEmitter<void>(); // 1. Emite um evento para limpar a pesquisa
 
   categories = signal<Category[]>([]);
   filteredRecipes = signal<Recipe[]>([]);
@@ -21,26 +22,25 @@ export class RecipesSectionComponent implements OnInit, OnChanges {
   constructor(private recipeService: RecipeService) {}
 
   ngOnInit(): void {
-   
     this.recipeService.getCategories().subscribe(apiCategories => {
       const allCategory: Category = {
-        id: 'todos',
-        name: 'Todos',
-        emoji: '🍝',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        id: 'todos', name: 'Todos', emoji: '🍝', createdAt: new Date(), updatedAt: new Date()
       };
-      
       this.categories.set([allCategory, ...apiCategories]);
     });
     this.filterRecipes();
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['searchTerm'] && this.searchTerm && this.searchTerm.length > 0) {
+      this.selectedCategory.set('todos');
+    }
     this.filterRecipes();
   }
 
   onCategorySelect(categoryId: string): void {
+    // 2. Se o utilizador clicar numa categoria, pedimos para limpar a pesquisa
+    this.clearSearch.emit(); 
     this.selectedCategory.set(categoryId);
     this.filterRecipes();
   }
@@ -54,7 +54,6 @@ export class RecipesSectionComponent implements OnInit, OnChanges {
       category: this.selectedCategory() !== 'todos' ? this.selectedCategory() : undefined,
       search: this.searchTerm || undefined
     };
-
     this.recipeService.getRecipes(filters).subscribe(recipes => {
       this.filteredRecipes.set(recipes);
     });
