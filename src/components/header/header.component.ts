@@ -5,11 +5,12 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FavoriteService } from '../../services/favorite.service';
 import { debounceTime, distinctUntilChanged, Subject, map } from 'rxjs';
+import { ProfileMenuComponent } from "../profile-menu/profile-menu.component";
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ProfileMenuComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })

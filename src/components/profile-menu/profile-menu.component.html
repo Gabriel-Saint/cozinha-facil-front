@@ -1,0 +1,31 @@
+<!-- O contentor principal que reage ao hover no desktop e ao clique no mobile -->
+<div class="profile-menu-container" 
+     (mouseenter)="isMenuOpen.set(true)" 
+     (mouseleave)="isMenuOpen.set(false)"
+     (click)="toggleMenu()">
+
+  <!-- O Avatar -->
+  <div class="avatar">
+    <img *ngIf="currentUser()?.avatarUrl; else defaultAvatar" [src]="currentUser()?.avatarUrl" alt="Foto de Perfil">
+    
+    <!-- SVG Padrão que aparece se não houver foto -->
+    <ng-template #defaultAvatar>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    </ng-template>
+  </div>
+
+  <!-- O Menu Suspenso (Dropdown) -->
+  <div class="dropdown-menu" [class.show]="isMenuOpen()">
+    <div class="user-info">
+      <span class="user-name">{{ currentUser()?.name }}</span>
+      <span class="user-email">{{ currentUser()?.email }}</span>
+    </div>
+    <hr>
+    <a class="dropdown-item" routerLink="/profile">Meu Perfil</a>
+    <a class="dropdown-item" routerLink="/my-recipes">Minhas Receitas</a>
+    <a class="dropdown-item" (click)="onLogout()">Sair</a>
+  </div>
+
+</div>

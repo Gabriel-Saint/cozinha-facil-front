@@ -8,18 +8,12 @@
 
 .header-content {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem 1.5rem;
-  gap: 1rem;
-}
-
-.header-top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+  gap: 1.5rem;
 }
 
 .logo {
@@ -27,11 +21,13 @@
   font-weight: 700;
   font-size: 1.5rem;
   margin: 0;
+  flex-shrink: 0; // Impede que o logo encolha
 }
 
 .search-bar-container {
+  flex-grow: 1; // Faz a barra de pesquisa ocupar o espaço disponível
+  max-width: 500px; // Define um limite para não ficar excessivamente larga
   position: relative;
-  width: 100%;
 }
 
 #search-input {
@@ -42,13 +38,13 @@
   background-color: #f5f5f5;
   font-size: 1rem;
   transition: all 0.3s;
-}
 
-#search-input:focus {
-  outline: none;
-  background-color: #fff;
-  border-color: #F87060;
-  box-shadow: 0 0 0 3px rgba(248, 112, 96, 0.2);
+  &:focus {
+    outline: none;
+    background-color: #fff;
+    border-color: #F87060;
+    box-shadow: 0 0 0 3px rgba(248, 112, 96, 0.2);
+  }
 }
 
 .search-icon {
@@ -58,26 +54,7 @@
   transform: translateY(-50%);
 }
 
-.btn-logout {
-  background-color: transparent;
-  border: 1px solid #EAEAEA;
-  color: #666;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s;
-  cursor: pointer;
-}
-
-.btn-logout:hover {
-  background-color: #F87060;
-  color: white;
-  border-color: #F87060;
-}
-
 .main-nav {
-  background-color: #fff;
   border-top: 1px solid #EAEAEA;
   text-align: center;
   padding: 0.75rem 1rem;
@@ -86,46 +63,40 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem 1.5rem;
+
+  a {
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+    padding: 0.2rem 0;
+    cursor: pointer;
+
+    &:hover {
+      color: #F87060;
+    }
+  }
 }
 
-.main-nav a {
-  text-decoration: none;
-  color: #666;
-  font-weight: 500;
-  font-size: 0.9rem;
-  transition: color 0.3s;
-  padding: 0.2rem 0;
-  cursor: pointer;
-}
-
-.main-nav a:hover {
-  color: #F87060;
-}
-
-.nav-whatsapp-link {
-  background-color: #25D366 !important;
-  color: white !important;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
-  font-weight: 600 !important;
-  transition: background-color 0.3s;
-}
-
-.nav-whatsapp-link:hover {
-  background-color: #1DA851 !important;
-  color: white !important;
-}
-
-@media (min-width: 769px) {
+// Adaptação para mobile
+@media (max-width: 768px) {
   .header-content {
-    flex-direction: row;
+    flex-wrap: wrap; // Permite que os itens quebrem para a linha de baixo
   }
+
   .search-bar-container {
-    width: auto;
-    flex-grow: 1;
-    max-width: 450px;
+    order: 3; // Envia a barra de pesquisa para a segunda linha
+    width: 100%; // Faz com que ocupe a largura total
+    margin-top: 0.5rem;
+    max-width: none; // Remove a largura máxima no mobile
   }
-  .nav-whatsapp-link {
-    display: none;
+
+  .logo {
+    order: 1;
+  }
+
+  app-profile-menu {
+    order: 2;
   }
 }
