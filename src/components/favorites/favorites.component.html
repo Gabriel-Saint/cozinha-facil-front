@@ -5,7 +5,7 @@
     <a 
       *ngFor="let recipe of favoriteRecipes()" 
       class="favorite-card"
-      [href]="'#recipe-' + recipe.id"
+      (click)="onFavoriteClickEmitForModal(recipe)"
     >
       <span class="recipe-icon">{{ recipe.icon || '🍽️' }}</span>
       <span class="favorite-card-title">{{ recipe.title }}</span>

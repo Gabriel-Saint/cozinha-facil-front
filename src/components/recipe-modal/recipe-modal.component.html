@@ -1,0 +1,39 @@
+<div class="modal-overlay" *ngIf="recipe" (click)="onClose()">
+  <div class="modal-content" (click)="onModalContentClick($event)">
+
+    <div class="modal-top-actions">
+        <button 
+            class="favorite-btn" 
+            [class.active]="isFavorited()"
+            (click)="onToggleFavorite($event)"
+            title="Remover dos favoritos"
+        >
+            <svg class="star-icon" viewBox="0 0 24 24">
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+            </svg>
+        </button>
+        <button class="close-button" (click)="onClose()">×</button>
+    </div>
+    
+    <div class="modal-header">
+      <div class="recipe-icon">{{ recipe.icon || '🍽️' }}</div>
+      <div class="recipe-details">
+        <h4>{{ recipe.title }}</h4>
+        <div class="recipe-meta">
+          <span>🕒 {{ recipe.prepTime }}</span>
+          <span>🍴 Para {{ recipe.servings }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="recipe-preparation">
+      <div class="recipe-ingredients" *ngIf="recipe.ingredients">
+        <h5>Ingredientes:</h5>
+        <p [innerHTML]="formatHtml(recipe.ingredients)"></p>
+      </div>
+      <h5>Modo de Preparo:</h5>
+      <div [innerHTML]="formatHtml(recipe.preparation)"></div>
+    </div>
+
+  </div>
+</div>

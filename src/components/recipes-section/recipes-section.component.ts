@@ -21,26 +21,22 @@ export class RecipesSectionComponent implements OnInit, OnChanges {
   constructor(private recipeService: RecipeService) {}
 
   ngOnInit(): void {
-    // Carregar categorias da API
+   
     this.recipeService.getCategories().subscribe(apiCategories => {
-      // CORREÇÃO: Adicionamos as propriedades em falta ao objeto "Todos"
       const allCategory: Category = {
         id: 'todos',
         name: 'Todos',
         emoji: '🍝',
-        createdAt: new Date(), // Adicionado para satisfazer o tipo
-        updatedAt: new Date()  // Adicionado para satisfazer o tipo
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
       
       this.categories.set([allCategory, ...apiCategories]);
     });
-
-    // Carregamento inicial das receitas
     this.filterRecipes();
   }
 
   ngOnChanges(): void {
-    // Filtra as receitas sempre que o termo de busca mudar
     this.filterRecipes();
   }
 
@@ -50,8 +46,6 @@ export class RecipesSectionComponent implements OnInit, OnChanges {
   }
 
   onFavoriteToggle(recipeId: string): void {
-    // A lógica de favoritar é tratada no RecipeCardComponent.
-    // Este método pode ser usado para análises futuras.
     console.log(`Recipe ${recipeId} favorite toggled`);
   }
 

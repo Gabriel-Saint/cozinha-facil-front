@@ -1,0 +1,87 @@
+// Importamos os estilos do recipe-card para manter a consistência visual
+@use '../recipe-card/recipe-card.component.scss';
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out;
+  padding: 1rem;
+  z-index: 1050;
+}
+
+.modal-content {
+
+  @extend .recipe-card; 
+  cursor: default;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  &:hover {
+    transform: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+}
+
+
+.modal-top-actions {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; 
+  z-index: 10;
+}
+
+.close-button {
+  position: relative;
+  top: auto;
+  right: auto;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  font-weight: 300;
+  color: #aaa;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+
+  &:hover {
+    color: #333;
+  }
+}
+
+.modal-top-actions .favorite-btn {
+  margin-left: 0;
+}
+
+.recipe-summary {
+  cursor: default;
+  padding-right: 5rem; 
+}
+
+.recipe-preparation {
+  display: block; 
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

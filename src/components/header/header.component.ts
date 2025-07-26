@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, signal, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, signal, OnInit, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'] // Assumindo que já mudou para SASS
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
   @Output() searchChange = new EventEmitter<string>();
@@ -23,7 +23,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private favoriteService: FavoriteService,
-    private router: Router
+    private router: Router,
+    private el: ElementRef 
   ) {}
 
   ngOnInit(): void {
@@ -48,13 +49,22 @@ export class HeaderComponent implements OnInit {
   }
 
   /**
-   * NOVA FUNÇÃO: Rola a página até a secção desejada.
    * @param sectionId O ID do elemento HTML para onde rolar.
    */
   scrollToSection(sectionId: string): void {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      const headerElement = this.el.nativeElement.querySelector('.main-header') as HTMLElement;
+      const headerHeight = headerElement ? headerElement.offsetHeight : 0;
+
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
   }
 }

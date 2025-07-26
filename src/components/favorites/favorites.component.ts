@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Recipe } from '../../models/recipe.model';
 import { FavoriteService } from '../../services/favorite.service';
@@ -14,6 +14,8 @@ import { combineLatest, map } from 'rxjs';
 })
 export class FavoritesComponent implements OnInit {
   favoriteRecipes = signal<Recipe[]>([]);
+
+  @Output() viewRecipe = new EventEmitter<Recipe>();
 
   constructor(
     private favoriteService: FavoriteService,
@@ -32,5 +34,9 @@ export class FavoritesComponent implements OnInit {
     ).subscribe(favoriteRecipes => {
       this.favoriteRecipes.set(favoriteRecipes);
     });
+  }
+
+   onFavoriteClickEmitForModal(recipe: Recipe): void {
+    this.viewRecipe.emit(recipe);
   }
 }

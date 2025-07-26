@@ -175,3 +175,7 @@ img {
 //     --cor-borda: #404040;
 //   }
 // }
+
+body.modal-open {
+  overflow: hidden;
+}
