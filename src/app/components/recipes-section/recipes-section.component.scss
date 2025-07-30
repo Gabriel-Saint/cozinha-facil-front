@@ -82,3 +82,70 @@ h3 {
     gap: 1rem;
   }
 }
+
+.access-level-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--cor-borda);
+
+  .tab {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--cor-texto-claro);
+    cursor: pointer;
+    position: relative;
+    border-bottom: 3px solid transparent;
+    transition: color 0.3s;
+
+    &.active {
+      color: var(--cor-principal);
+      border-bottom-color: var(--cor-principal);
+    }
+  }
+}
+
+// NOVOS ESTILOS PARA A MENSAGEM DE UPGRADE
+.upgrade-prompt {
+  text-align: center;
+  background-color: #fff;
+  padding: 3rem 2rem;
+  border-radius: 16px;
+  border: 2px dashed #fdeceb;
+  margin-top: 2rem;
+
+  .icon {
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    color: var(--cor-texto);
+  }
+
+  p {
+    max-width: 500px;
+    margin: 0.5rem auto 1.5rem auto;
+    color: var(--cor-texto-claro);
+  }
+
+  .btn-upgrade {
+    background-color: var(--cor-principal);
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #e85d4a;
+    }
+  }
+}

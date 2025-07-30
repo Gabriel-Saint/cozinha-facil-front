@@ -43,3 +43,9 @@ export interface RecipeFilters {
   category?: string;
   search?: string;
 }
+
+export interface RecipeFilters {
+  category?: string;
+  search?: string;
+  accessLevel?: 'PUBLIC' | 'PREMIUM'; 
+}

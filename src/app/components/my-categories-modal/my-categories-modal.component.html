@@ -1,0 +1,35 @@
+<div class="modal-overlay" (click)="closeModal.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-button" (click)="closeModal.emit()">×</button>
+    <h3>Gerir Minhas Categorias</h3>
+
+    <div class="categories-list">
+      <div *ngIf="myCategories().length === 0" class="no-categories">
+        Nenhuma categoria pessoal criada.
+      </div>
+      <div class="category-item" *ngFor="let category of myCategories()">
+        <span>{{ category.emoji }} {{ category.name }}</span>
+        <button class="btn-delete" (click)="onDeleteCategory(category.id)">Apagar</button>
+      </div>
+    </div>
+
+    <form class="new-category-form" [formGroup]="newCategoryForm" (ngSubmit)="onAddCategory()">
+      <h4>Adicionar Nova Categoria</h4>
+      <div class="form-row">
+        <input type="text" formControlName="name" placeholder="Nome da categoria">
+        <input type="text" formControlName="emoji" placeholder="Emoji (opcional)" maxlength="2">
+        <button type="submit" class="btn-add" [disabled]="newCategoryForm.invalid || isLoading()">
+          {{ isLoading() ? 'A adicionar...' : 'Adicionar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- O novo modal de confirmação, que só aparece quando necessário -->
+<app-confirmation-modal 
+  *ngIf="showConfirmModal()"
+  message="Tem a certeza que quer apagar esta categoria? Todas as receitas associadas ficarão sem categoria."
+  (confirm)="onConfirmDelete()"
+  (cancel)="closeConfirmModal()"
+></app-confirmation-modal>

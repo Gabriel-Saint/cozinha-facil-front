@@ -1,0 +1,48 @@
+<header class="simple-header">
+  <a routerLink="/dashboard" class="logo-link">CozinhaFácil</a>
+  <button class="back-button" (click)="goBack()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    Voltar
+  </button>
+</header>
+
+<main class="upgrade-container">
+  <div class="upgrade-box">
+    <div class="plan-details">
+      <span class="pro-badge">PLANO PRO</span>
+      <h1>Acesso Ilimitado por Apenas R$ 29,90/mês</h1>
+      <p class="subtitle">Desbloqueie todo o potencial da sua cozinha com as funcionalidades exclusivas do plano Pro.</p>
+      <ul class="benefits-list">
+        <li>✅ Crie e guarde as suas próprias receitas</li>
+        <li>✅ Adicione as suas próprias fotos e categorias</li>
+        <li>✅ Acesso a +100 receitas premium exclusivas</li>
+        <li>✅ Sem anúncios e com suporte prioritário</li>
+      </ul>
+    </div>
+
+    <div class="payment-form">
+      <h3>Pagamento Seguro</h3>
+      <!-- O Brick do Mercado Pago será renderizado aqui -->
+      <div id="paymentBrick_container">
+        <div class="loader" *ngIf="isLoading()">
+          <p>A carregar formulário de pagamento...</p>
+        </div>
+      </div>
+
+      <button 
+        class="btn-pay" 
+        (click)="processPayment()" 
+        [disabled]="isLoading() || isProcessing()">
+        <span *ngIf="!isProcessing()">Pagar Agora e Ativar o Plano Pro</span>
+        <span *ngIf="isProcessing()">A processar...</span>
+      </button>
+
+      <p *ngIf="errorMessage()" class="error-message">{{ errorMessage() }}</p>
+
+      <div class="security-info">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        <span>Pagamento seguro processado pelo Mercado Pago.</span>
+      </div>
+    </div>
+  </div>
+</main>

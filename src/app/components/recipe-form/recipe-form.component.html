@@ -1,0 +1,51 @@
+<div class="modal-overlay" (click)="closeModal.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-button" (click)="closeModal.emit()">×</button>
+    <h3>Adicionar Nova Receita</h3>
+
+    <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+      <div class="input-group">
+        <label for="title">Título da Receita</label>
+        <input type="text" id="title" formControlName="title">
+      </div>
+      
+      <div class="input-group">
+        <label for="description">Descrição</label>
+        <textarea id="description" formControlName="description" rows="3"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="input-group">
+          <label for="prepTime">Tempo de Preparo</label>
+          <input type="text" id="prepTime" formControlName="prepTime" placeholder="Ex: 30 min">
+        </div>
+        <div class="input-group">
+          <label for="servings">Rendimento</label>
+          <input type="text" id="servings" formControlName="servings" placeholder="Ex: 4 porções">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="ingredients">Ingredientes</label>
+        <textarea id="ingredients" formControlName="ingredients" rows="5"></textarea>
+      </div>
+
+      <div class="input-group">
+        <label for="preparation">Modo de Preparo</label>
+        <textarea id="preparation" formControlName="preparation" rows="8"></textarea>
+      </div>
+
+      <div class="input-group">
+        <label for="image">Foto da Receita (Opcional)</label>
+        <input type="file" id="image" (change)="onFileSelected($event)" accept="image/*">
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="closeModal.emit()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="recipeForm.invalid || isLoading">
+          {{ isLoading ? 'A salvar...' : 'Salvar Receita' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<section id="recipes-section">
+  <div class="section-header">
+    <h3>Nosso Acervo de Receitas</h3>
+    <span class="section-tag">{{ filteredRecipes().length }} receitas</span>
+  </div>
+
+  <!-- NOVOS SEPARADORES DE NÍVEL DE ACESSO -->
+  <div class="access-level-tabs">
+    <button 
+      class="tab" 
+      [class.active]="selectedAccessLevel() === 'PUBLIC'"
+      (click)="onAccessLevelSelect('PUBLIC')">
+      Receitas Públicas
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="selectedAccessLevel() === 'PREMIUM'"
+      (click)="onAccessLevelSelect('PREMIUM')">
+      ⭐ Receitas Premium
+    </button>
+  </div>
+  
+  <div class="category-grid">
+    <!-- ... (seu código de filtros de categoria existente) ... -->
+  </div>
+  
+  <!-- LÓGICA DE VISUALIZAÇÃO -->
+  <ng-container *ngIf="selectedAccessLevel() === 'PUBLIC' || isPro(); else upgradePrompt">
+    <div class="recipes-list" *ngIf="filteredRecipes().length > 0">
+      <app-recipe-card 
+        *ngFor="let recipe of filteredRecipes()"
+        [recipe]="recipe"
+      ></app-recipe-card>
+    </div>
+    <p class="no-results" *ngIf="filteredRecipes().length === 0">
+      Nenhuma receita encontrada para sua busca.
+    </p>
+  </ng-container>
+
+  <!-- MENSAGEM DE UPGRADE PARA UTILIZADORES GRATUITOS -->
+  <ng-template #upgradePrompt>
+    <div class="upgrade-prompt">
+      <div class="icon">⭐</div>
+      <h3>Desbloqueie Receitas Exclusivas!</h3>
+      <p>Faça o upgrade para o Plano Pro e tenha acesso a este e a muito mais conteúdo premium, além de poder criar o seu próprio caderno de receitas.</p>
+      <a routerLink="/upgrade-pro" class="btn-upgrade">Tornar-se Pro Agora</a>
+    </div>
+  </ng-template>
+</section>

@@ -16,17 +16,21 @@
   gap: 1.5rem;
 }
 
+.logo-link {
+  text-decoration: none;
+}
+
 .logo {
   color: #F87060;
   font-weight: 700;
   font-size: 1.5rem;
   margin: 0;
-  flex-shrink: 0; // Impede que o logo encolha
+  flex-shrink: 0;
 }
 
 .search-bar-container {
-  flex-grow: 1; // Faz a barra de pesquisa ocupar o espaço disponível
-  max-width: 500px; // Define um limite para não ficar excessivamente larga
+  flex-grow: 1;
+  max-width: 500px;
   position: relative;
 }
 
@@ -52,6 +56,33 @@
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.my-recipes-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover,
+  &.active {
+    background-color: #fdf2f0;
+    color: var(--cor-principal);
+  }
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
 }
 
 .main-nav {
@@ -82,21 +113,21 @@
 // Adaptação para mobile
 @media (max-width: 768px) {
   .header-content {
-    flex-wrap: wrap; // Permite que os itens quebrem para a linha de baixo
+    flex-wrap: wrap;
   }
 
   .search-bar-container {
-    order: 3; // Envia a barra de pesquisa para a segunda linha
-    width: 100%; // Faz com que ocupe a largura total
+    order: 3;
+    width: 100%;
     margin-top: 0.5rem;
-    max-width: none; // Remove a largura máxima no mobile
+    max-width: none;
   }
 
-  .logo {
+  .logo-link {
     order: 1;
   }
 
-  app-profile-menu {
+  .user-actions {
     order: 2;
   }
 }

@@ -1,0 +1,66 @@
+<app-header></app-header>
+
+<main class="my-recipes-container">
+  <div class="page-header">
+    <h1>Meu Caderno de Receitas</h1>
+    <button class="btn-create" (click)="openCreateRecipeModal()">
+      + Adicionar Nova Receita
+    </button>
+  </div>
+
+  <div class="filters-container">
+    <!-- NOVO: Campo de pesquisa específico para as receitas do utilizador -->
+    <div class="search-bar-container">
+      <input 
+        type="text" 
+        placeholder="Pesquisar nas minhas receitas..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearchChange($event)"
+      />
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#666">
+        <path d="M0 0h24v24H0V0z" fill="none" />
+        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+      </svg>
+    </div>
+
+    <div class="category-grid">
+      <div 
+        *ngFor="let category of myCategories()" 
+        class="category-card"
+        [class.active]="selectedCategory() === category.id"
+        (click)="onCategorySelect(category.id)"
+      >
+        <span *ngIf="category.emoji">{{ category.emoji }}</span>
+        {{ category.name }}
+      </div>
+      <button class="btn-manage-categories" (click)="openCategoryModal()">Gerir Categorias</button>
+    </div>
+  </div>
+
+  <div class="recipes-grid" *ngIf="filteredRecipes().length > 0; else noRecipes">
+    <app-recipe-card 
+      *ngFor="let recipe of filteredRecipes()"
+      [recipe]="recipe"
+    ></app-recipe-card>
+  </div>
+
+  <ng-template #noRecipes>
+    <div class="no-results">
+      <p>Nenhuma receita encontrada.</p>
+      <p *ngIf="myRecipes().length === 0">Clique em "Adicionar Nova Receita" para começar!</p>
+    </div>
+  </ng-template>
+</main>
+
+<!-- Modais -->
+<app-recipe-form 
+  *ngIf="isRecipeModalOpen()"
+  (closeModal)="closeRecipeModal()"
+  (recipeSaved)="onRecipeSaved($event)"
+></app-recipe-form>
+
+<app-my-categories-modal
+  *ngIf="isCategoryModalOpen()"
+  (closeModal)="closeCategoryModal()"
+  (categoriesChanged)="onCategoriesChanged()"
+></app-my-categories-modal>
