@@ -1,0 +1,19 @@
+<div class="modal-overlay" (click)="closeModal.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-button" (click)="closeModal.emit()">×</button>
+    <h3>Editar Utilizador: {{ user.name }}</h3>
+    
+    <form [formGroup]="userForm" (ngSubmit)="onRenew()">
+      <div class="input-group">
+        <label for="newExpirationDate">Nova Data de Expiração (Plano Pro)</label>
+        <input type="date" id="newExpirationDate" formControlName="newExpirationDate">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="closeModal.emit()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="userForm.invalid || isLoading">
+          {{ isLoading ? 'A renovar...' : 'Renovar Assinatura' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

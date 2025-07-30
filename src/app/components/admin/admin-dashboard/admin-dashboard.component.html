@@ -1,0 +1,40 @@
+<div class="dashboard-header">
+  <h2>Dashboard Geral</h2>
+  <p>Uma visão geral do desempenho da sua aplicação.</p>
+</div>
+
+<div class="stats-grid" *ngIf="!isLoading() && stats() as s">
+  <div class="stat-card">
+    <div class="stat-icon users">
+      <svg><!-- Ícone de Utilizadores --></svg>
+    </div>
+    <div class="stat-info">
+      <span class="stat-value">{{ s.totalUsers }}</span>
+      <span class="stat-title">Total de Utilizadores</span>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon pro">
+      <svg><!-- Ícone de Estrela --></svg>
+    </div>
+    <div class="stat-info">
+      <span class="stat-value">{{ s.proUsers }}</span>
+      <span class="stat-title">Assinantes Pro</span>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon recipes">
+      <svg><!-- Ícone de Livro de Receitas --></svg>
+    </div>
+    <div class="stat-info">
+      <span class="stat-value">{{ s.totalRecipes }}</span>
+      <span class="stat-title">Total de Receitas</span>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading()" class="loading-spinner">
+  A carregar estatísticas...
+</div>

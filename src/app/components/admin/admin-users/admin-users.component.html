@@ -1,0 +1,51 @@
+<div class="page-header">
+  <h2>Gestão de Utilizadores</h2>
+  <p>Visualize e gira todos os utilizadores registados na plataforma.</p>
+</div>
+
+<div class="table-container" *ngIf="!isLoading()">
+  <table class="users-table">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>E-mail</th>
+        <th>Status da Subscrição</th>
+        <th>Data de Registo</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users()">
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <span 
+            class="status-badge" 
+            [class.pro]="user.subscription?.status === 'active'"
+            [class.inactive]="user.subscription?.status !== 'active'"
+          >
+            {{ user.subscription?.status === 'active' ? 'PRO' : 'Básico' }}
+          </span>
+        </td>
+        <td>{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
+        <td class="actions-cell">
+          <!-- O botão "Editar" agora abre o modal -->
+          <button class="btn-action edit" (click)="openEditModal(user)" title="Editar Utilizador">Editar</button>
+          <button class="btn-action delete" (click)="onDeleteUser(user.id)" title="Apagar Utilizador">Apagar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="isLoading()" class="loading-spinner">
+  A carregar lista de utilizadores...
+</div>
+
+<!-- O Modal de Edição de Utilizador -->
+<app-admin-user-edit-modal
+  *ngIf="isModalOpen() && selectedUser()"
+  [user]="selectedUser()!"
+  (closeModal)="closeModal()"
+  (userUpdated)="onUserUpdated()"
+></app-admin-user-edit-modal>

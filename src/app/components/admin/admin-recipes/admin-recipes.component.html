@@ -1,0 +1,57 @@
+<div class="page-header">
+  <h2>Gestão de Receitas</h2>
+  <p>Crie, edite e gira todas as receitas da plataforma.</p>
+  <button class="btn-create" (click)="openCreateModal()">+ Criar Nova Receita</button>
+</div>
+
+<div class="table-container" *ngIf="!isLoading()">
+  <table class="recipes-table">
+    <thead>
+      <tr>
+        <th>Título</th>
+        <th>Autor</th>
+        <th>Nível de Acesso</th>
+        <th>Categoria</th>
+        <th>Data de Criação</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let recipe of recipes()">
+        <td>{{ recipe.title }}</td>
+        <td>{{ recipe.author?.name || 'N/A' }}</td>
+        <td>
+          <span 
+            class="status-badge" 
+            [ngClass]="{
+              'public': recipe.accessLevel === 'PUBLIC',
+              'premium': recipe.accessLevel === 'PREMIUM',
+              'private': recipe.accessLevel === 'PRIVATE'
+            }"
+          >
+            {{ recipe.accessLevel }}
+          </span>
+        </td>
+        <td>{{ recipe.category?.name || 'Sem Categoria' }}</td>
+        <td>{{ recipe.createdAt | date:'dd/MM/yyyy' }}</td>
+        <td class="actions-cell">
+          <button class="btn-action edit" (click)="openEditModal(recipe)" title="Editar Receita">Editar</button>
+          <button class="btn-action delete" (click)="onDeleteRecipe(recipe.id)" title="Apagar Receita">Apagar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="isLoading()" class="loading-spinner">
+  A carregar lista de receitas...
+</div>
+
+<!-- O Modal do Formulário de Receitas do Admin -->
+<app-admin-recipe-form
+  *ngIf="isModalOpen()"
+  [recipe]="selectedRecipe()"
+  [categories]="categories()"
+  (closeModal)="closeModal()"
+  (recipeSaved)="onRecipeSaved()"
+></app-admin-recipe-form>

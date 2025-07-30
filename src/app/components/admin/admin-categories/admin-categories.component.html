@@ -1,0 +1,44 @@
+<div class="page-header">
+  <h2>Gestão de Categorias</h2>
+  <p>Crie e gira as categorias de receitas públicas da plataforma.</p>
+  <button class="btn-create" (click)="openCreateModal()">+ Criar Nova Categoria</button>
+</div>
+
+<div class="categories-container" *ngIf="!isLoading()">
+  <div class="category-list-item" *ngFor="let category of categories()">
+    <div class="category-info">
+      <span class="category-emoji">{{ category.emoji || '📁' }}</span>
+      <span class="category-name">{{ category.name }}</span>
+    </div>
+    <div class="actions-cell">
+      <button class="btn-action edit" (click)="openEditModal(category)">Editar</button>
+      <button class="btn-action delete" (click)="onDeleteCategory(category.id)">Apagar</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading()" class="loading-spinner">
+  A carregar categorias...
+</div>
+
+<!-- Modal para Criar/Editar Categoria -->
+<div class="modal-overlay" *ngIf="isModalOpen()" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-button" (click)="closeModal()">×</button>
+    <h3>{{ editingCategory() ? 'Editar Categoria' : 'Nova Categoria' }}</h3>
+    <form [formGroup]="categoryForm" (ngSubmit)="onSaveCategory()">
+      <div class="input-group">
+        <label for="name">Nome da Categoria</label>
+        <input type="text" id="name" formControlName="name">
+      </div>
+      <div class="input-group">
+        <label for="emoji">Emoji (Opcional)</label>
+        <input type="text" id="emoji" formControlName="emoji" maxlength="2">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="categoryForm.invalid">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>

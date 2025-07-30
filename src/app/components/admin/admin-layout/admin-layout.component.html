@@ -1,0 +1,42 @@
+<div class="admin-layout">
+  <nav class="admin-sidebar">
+    <div class="sidebar-header">
+      <h3>Admin</h3>
+      <span>CozinhaFácil</span>
+    </div>
+    <ul class="sidebar-nav">
+      <li>
+        <a routerLink="/admin/dashboard" routerLinkActive="active">
+          <svg><!-- Ícone de Dashboard --></svg>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/admin/users" routerLinkActive="active">
+          <svg><!-- Ícone de Utilizadores --></svg>
+          <span>Utilizadores</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/admin/recipes" routerLinkActive="active">
+          <svg><!-- Ícone de Receitas --></svg>
+          <span>Receitas</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/admin/categories" routerLinkActive="active">
+          <svg><!-- Ícone de Categorias --></svg>
+          <span>Categorias</span>
+        </a>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <a routerLink="/dashboard">Voltar ao Site</a>
+    </div>
+  </nav>
+
+  <main class="admin-content">
+    <!-- As páginas de gestão serão renderizadas aqui -->
+    <router-outlet></router-outlet>
+  </main>
+</div>
