@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, signal, OnChanges, computed } from '@angular/core';
+import { Component, Input, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Recipe, Category, RecipeFilters } from '../../models/recipe.model';
 import { RecipeService } from '../../services/recipe.service';
@@ -13,16 +13,39 @@ import { RouterLink } from '@angular/router';
   templateUrl: './recipes-section.component.html',
   styleUrls: ['./recipes-section.component.scss']
 })
-export class RecipesSectionComponent implements OnInit, OnChanges {
-  @Input() searchTerm = '';
+export class RecipesSectionComponent implements OnInit {
+  // Usamos um setter para o @Input para o ligar a um signal
+  @Input() set searchTerm(value: string) {
+    this.searchTermSignal.set(value);
+  }
 
+  // Sinais para guardar o estado
+  private allRecipes = signal<Recipe[]>([]);
   categories = signal<Category[]>([]);
-  filteredRecipes = signal<Recipe[]>([]);
   selectedCategory = signal<string>('todos');
-  
-  // Novo estado para os separadores principais
   selectedAccessLevel = signal<'PUBLIC' | 'PREMIUM'>('PUBLIC');
+  searchTermSignal = signal<string>('');
+  
   isPro = computed(() => this.authService.currentUser()?.subscription?.status === 'active');
+
+
+  filteredRecipes = computed(() => {
+    const recipes = this.allRecipes();
+    const accessLevel = this.selectedAccessLevel();
+    const category = this.selectedCategory();
+    const search = this.searchTermSignal();
+
+    return recipes.filter(recipe => {
+   
+      const matchesAccessLevel = recipe.accessLevel === accessLevel;
+
+      const matchesCategory = category === 'todos' || recipe.categoryId === category;
+      
+      const matchesSearch = !search || recipe.title.toLowerCase().includes(search.toLowerCase());
+
+      return matchesAccessLevel && matchesCategory && matchesSearch;
+    });
+  });
 
   constructor(
     private recipeService: RecipeService,
@@ -30,39 +53,27 @@ export class RecipesSectionComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    // CORREÇÃO: Carregamos os dados usando o método getRecipes() do serviço.
+    this.recipeService.getRecipes().subscribe((recipes: Recipe[]) => {
+      this.allRecipes.set(recipes);
+    });
+
     this.recipeService.getCategories().subscribe(apiCategories => {
+      // O seu código para adicionar a categoria "Todos" está perfeito
       const allCategory: Category = {
         id: 'todos', name: 'Todos', emoji: '🍝', createdAt: new Date(), updatedAt: new Date()
       };
       this.categories.set([allCategory, ...apiCategories]);
     });
-    this.filterRecipes();
   }
 
-  ngOnChanges(): void {
-    this.filterRecipes();
-  }
-
+  // Agora, estas funções apenas atualizam o estado. O 'computed signal' faz o resto.
   onAccessLevelSelect(level: 'PUBLIC' | 'PREMIUM'): void {
     this.selectedAccessLevel.set(level);
-    this.selectedCategory.set('todos'); // Reseta o filtro de categoria
-    this.filterRecipes();
+    this.selectedCategory.set('todos'); // Reseta a categoria ao mudar de separador
   }
 
   onCategorySelect(categoryId: string): void {
     this.selectedCategory.set(categoryId);
-    this.filterRecipes();
-  }
-
-  private filterRecipes(): void {
-    const filters: RecipeFilters = {
-      accessLevel: this.selectedAccessLevel(),
-      category: this.selectedCategory() !== 'todos' ? this.selectedCategory() : undefined,
-      search: this.searchTerm || undefined
-    };
-
-    this.recipeService.getRecipes(filters).subscribe(recipes => {
-      this.filteredRecipes.set(recipes);
-    });
   }
 }

@@ -19,7 +19,7 @@ export class UpgradeProComponent implements OnInit {
   errorMessage = signal('');
   
   private mp: any;
-  private paymentBrick: any; // Alterado de cardPaymentBrick para paymentBrick
+  private paymentBrick: any;
 
   constructor(
     private paymentService: PaymentService,
@@ -45,8 +45,8 @@ export class UpgradeProComponent implements OnInit {
   }
 
   private initializeMercadoPago(): void {
-    this.mp = new MercadoPago('SUA_PUBLIC_KEY_AQUI'); 
-    this.initializePaymentBrick(); // Alterado para a nova função
+    this.mp = new MercadoPago(''); // Sua Public Key de Teste
+    this.initializePaymentBrick();
   }
 
   private async initializePaymentBrick(): Promise<void> {
@@ -61,8 +61,13 @@ export class UpgradeProComponent implements OnInit {
             theme: 'default',
           },
         },
-        // Não é preciso configurar os métodos de pagamento,
-        // o Brick mostra todos os disponíveis para o valor.
+        // CORREÇÃO: A propriedade 'paymentMethods' foi movida para dentro de 'customization'
+        paymentMethods: {
+          creditCard: 'all',
+          debitCard: 'all',
+          ticket: 'all', // Boleto
+          bankTransfer: 'all'
+        },
       },
       callbacks: {
         onReady: () => {
@@ -90,7 +95,6 @@ export class UpgradeProComponent implements OnInit {
       },
     };
 
-    // ALTERAÇÃO PRINCIPAL: Criamos o brick de 'payment' em vez de 'cardPayment'
     this.paymentBrick = await bricksBuilder.create('payment', 'paymentBrick_container', settings);
   }
 

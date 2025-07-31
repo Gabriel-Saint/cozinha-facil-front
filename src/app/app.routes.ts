@@ -1,32 +1,43 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './components/login/login.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AuthGuard } from './guards/auth.guard';
-import { AdminGuard } from './guards/admin.guard'; // 1. Importe o AdminGuard
+import { AdminGuard } from './guards/admin.guard';
+import { ProGuard } from './guards/pro.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'login', loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent) },
-  { path: 'register', loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent) },
+  { 
+    path: 'login', 
+    loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent) 
+  },
+  { 
+    path: 'register', 
+    loadComponent: () => import('./components/register/register.component').then(m => m.RegisterComponent) 
+  },
   { 
     path: 'dashboard', 
     loadComponent: () => import('./components/dashboard/dashboard.component').then(m => m.DashboardComponent),
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   { 
     path: 'profile', 
     loadComponent: () => import('./components/profile/profile.component').then(m => m.ProfileComponent),
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: 'my-recipes',
     loadComponent: () => import('./components/my-recipes/my-recipes.component').then(m => m.MyRecipesComponent),
-    // canActivate: [AuthGuard]
+    // A rota continua protegida para garantir que o utilizador é Pro
+    canActivate: [AuthGuard, ProGuard] 
   },
-  // 2. Adicione a nova secção de Admin com as suas rotas filhas
+  {
+    path: 'upgrade-pro',
+    loadComponent: () => import('./components/upgrade-pro/upgrade-pro.component').then(m => m.UpgradeProComponent),
+    canActivate: [AuthGuard]
+  },
+  // NOVA SECÇÃO DE ADMINISTRAÇÃO
   {
     path: 'admin',
-    // canActivate: [AuthGuard, AdminGuard], // Protegido por ambos os guardiões
+    canActivate: [AuthGuard, AdminGuard], // Protegido para apenas administradores
     loadComponent: () => import('./components/admin/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

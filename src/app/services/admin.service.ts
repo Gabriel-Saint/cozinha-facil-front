@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, BehaviorSubject, throwError } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { User } from '../models/user.model';
 import { Recipe, Category } from '../models/recipe.model';
 
-// Tipos para os dados do dashboard
 export interface DashboardStats {
   totalUsers: number;
   proUsers: number;
@@ -20,93 +19,84 @@ export class AdminService {
   private apiUrl = `${environment.apiUrl}/admin`;
   private categoriesApiUrl = `${environment.apiUrl}/categories`;
 
-  // Mocks para simulação
-  private mockRecipes = new BehaviorSubject<Recipe[]>([]);
-  private mockCategories = new BehaviorSubject<Category[]>([
-    { id: 'proteica', name: 'Proteicas', emoji: '💪', createdAt: new Date(), updatedAt: new Date() },
-    { id: 'saudavel', name: 'Saudáveis', emoji: '🥗', createdAt: new Date(), updatedAt: new Date() },
-  ]);
-
   constructor(private http: HttpClient) {}
 
   getDashboardStats(): Observable<DashboardStats> {
-    return of({ totalUsers: 125, proUsers: 25, totalRecipes: 150 }).pipe(delay(500));
+    return this.http.get<DashboardStats>(`${this.apiUrl}/dashboard`).pipe(
+      catchError(this.handleError)
+    );
   }
 
   getUsers(): Observable<User[]> {
-    const mockUsers: User[] = [
-      { id: '1', name: 'Cliente Básico', email: 'basico@email.com', cpf: '111', role: 'CLIENT', createdAt: new Date(), updatedAt: new Date() },
-      { id: '2', name: 'Cliente Pro', email: 'pro@email.com', cpf: '222', role: 'CLIENT', createdAt: new Date(), updatedAt: new Date(), subscription: { id: 'sub1', status: 'active', expiresAt: new Date() } },
-    ];
-    return of(mockUsers).pipe(delay(800));
+    return this.http.get<User[]>(`${this.apiUrl}/users`).pipe(
+      catchError(this.handleError)
+    );
   }
   
   getAllRecipes(): Observable<Recipe[]> {
-    // return this.http.get<Recipe[]>(`${this.apiUrl}/recipes`);
-    return this.mockRecipes.asObservable().pipe(delay(800));
+    return this.http.get<Recipe[]>(`${this.apiUrl}/recipes`).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  // --- MÉTODOS DE GESTÃO DE RECEITAS (PELO ADMIN) ---
   createAdminRecipe(recipeData: Partial<Recipe>): Observable<Recipe> {
-    const newRecipe = { ...recipeData, id: 'admin-recipe-' + Math.random() } as Recipe;
-    const current = this.mockRecipes.value;
-    this.mockRecipes.next([...current, newRecipe]);
-    return of(newRecipe).pipe(delay(500));
+    return this.http.post<Recipe>(`${this.apiUrl}/recipes`, recipeData).pipe(
+      catchError(this.handleError)
+    );
   }
 
   updateAdminRecipe(id: string, recipeData: Partial<Recipe>): Observable<Recipe> {
-    let updatedRecipe: Recipe | undefined;
-    const updatedList = this.mockRecipes.value.map(r => {
-      if (r.id === id) {
-        updatedRecipe = { ...r, ...recipeData };
-        return updatedRecipe;
-      }
-      return r;
-    });
-    this.mockRecipes.next(updatedList);
-    return updatedRecipe ? of(updatedRecipe).pipe(delay(500)) : throwError(() => new Error('Receita não encontrada'));
+    return this.http.patch<Recipe>(`${this.apiUrl}/recipes/${id}`, recipeData).pipe(
+      catchError(this.handleError)
+    );
   }
 
   renewUserSubscription(userId: string, newDate: Date): Observable<User> {
-    console.log(`A renovar subscrição para ${userId} até ${newDate.toLocaleDateString()}`);
-    // Aqui iria a chamada PATCH /admin/users/:id/renew-subscription
-    return of({} as User).pipe(delay(500));
+    const payload = { expirationDate: newDate.toISOString() };
+    return this.http.patch<User>(`${this.apiUrl}/users/${userId}/renew-subscription`, payload).pipe(
+      catchError(this.handleError)
+    );
   }
 
+  /**
+   * Realiza o soft-delete de um utilizador.
+   */
+  deleteUser(userId: string): Observable<any> {
+    // Assumindo que a sua API terá um endpoint DELETE /admin/users/:id
+    return this.http.delete(`${this.apiUrl}/users/${userId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
 
-  // --- MÉTODOS DE GESTÃO DE CATEGORIAS (MOCKADOS) ---
+  // --- MÉTODOS DE GESTÃO DE CATEGORIAS ---
+
   getPublicCategories(): Observable<Category[]> {
-    return this.mockCategories.asObservable().pipe(delay(500));
+    return this.http.get<Category[]>(this.categoriesApiUrl).pipe(
+      catchError(this.handleError)
+    );
   }
 
   createCategory(categoryData: { name: string, emoji?: string }): Observable<Category> {
-    const newCategory: Category = {
-      id: 'cat-' + Math.random(),
-      ...categoryData,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    const currentCategories = this.mockCategories.value;
-    this.mockCategories.next([...currentCategories, newCategory]);
-    return of(newCategory).pipe(delay(500));
+    return this.http.post<Category>(this.categoriesApiUrl, categoryData).pipe(
+      catchError(this.handleError)
+    );
   }
 
   updateCategory(id: string, categoryData: { name: string, emoji?: string }): Observable<Category> {
-    let updatedCategory: Category | undefined;
-    const updatedList = this.mockCategories.value.map(cat => {
-      if (cat.id === id) {
-        updatedCategory = { ...cat, ...categoryData, updatedAt: new Date() };
-        return updatedCategory;
-      }
-      return cat;
-    });
-    this.mockCategories.next(updatedList);
-    return updatedCategory ? of(updatedCategory).pipe(delay(500)) : throwError(() => new Error('Categoria não encontrada'));
+    return this.http.patch<Category>(`${this.categoriesApiUrl}/${id}`, categoryData).pipe(
+      catchError(this.handleError)
+    );
   }
 
   deleteCategory(id: string): Observable<any> {
-    const updatedList = this.mockCategories.value.filter(cat => cat.id !== id);
-    this.mockCategories.next(updatedList);
-    return of({ success: true }).pipe(delay(500));
+    return this.http.delete(`${this.categoriesApiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: any): Observable<never> {
+    console.error('Ocorreu um erro no AdminService!', error);
+    const errorMessage = error.error?.message || 'Ocorreu um erro desconhecido. Tente novamente.';
+    return throwError(() => new Error(errorMessage));
   }
 }

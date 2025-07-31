@@ -14,9 +14,14 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (this.authService.isLoggedIn()) {
-      return true;
+    // CORREÇÃO: Verificamos diretamente a presença do token.
+    // Isto é mais fiável do que usar isLoggedIn() imediatamente após o login.
+    const token = this.authService.getToken();
+    
+    if (token) {
+      return true; // Se o token existir, permite o acesso.
     } else {
+      // Se não houver token, redireciona para a página de login.
       return this.router.createUrlTree(['/login']);
     }
   }

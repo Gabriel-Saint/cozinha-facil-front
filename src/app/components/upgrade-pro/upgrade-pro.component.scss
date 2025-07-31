@@ -33,7 +33,6 @@
   }
 }
 
-// O corpo da página agora começa abaixo do header
 :host {
   display: block;
   background-color: var(--cor-fundo);
@@ -42,7 +41,8 @@
 
 .upgrade-container {
   max-width: 900px;
-  margin: 3rem auto;
+  // AJUSTE: Margem vertical reduzida
+  margin: 2rem auto;
   padding: 1.5rem;
 }
 
@@ -108,9 +108,9 @@
   }
 }
 
-// Seletor e altura mínima atualizados
 #paymentBrick_container {
-  min-height: 450px; 
+  // AJUSTE: Altura mínima reduzida para tornar o contentor mais compacto
+  min-height: 380px; 
 }
 
 .loader {

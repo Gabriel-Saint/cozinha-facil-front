@@ -1,25 +1,31 @@
 import { Injectable, signal } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Recipe } from '../models/recipe.model';
-import { RecipeService } from './recipe.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoriteService {
   private readonly FAVORITES_KEY = 'favoriteRecipesCozinhaFacil';
+  private apiUrl = `${environment.apiUrl}/recipes`;
+
   private favoriteIdsSubject = new BehaviorSubject<string[]>([]);
   public favoriteIds$ = this.favoriteIdsSubject.asObservable();
   
-  // Signal para UI reativa
   public favoriteCount = signal<number>(0);
 
-  constructor(private recipeService: RecipeService) {
-    this.loadFavorites();
+  constructor(
+    private http: HttpClient
+    // O RecipeService já não é necessário aqui, pois a comunicação é direta com a API
+  ) {
+    this.loadFavoritesFromStorage();
   }
 
-  private loadFavorites(): void {
+  // Carrega os favoritos do cache local ao iniciar
+  private loadFavoritesFromStorage(): void {
     const stored = localStorage.getItem(this.FAVORITES_KEY);
     if (stored) {
       try {
@@ -27,40 +33,51 @@ export class FavoriteService {
         this.favoriteIdsSubject.next(favoriteIds);
         this.favoriteCount.set(favoriteIds.length);
       } catch (error) {
-        console.error('Erro ao carregar favoritos:', error);
+        console.error('Erro ao carregar favoritos do cache:', error);
         this.favoriteIdsSubject.next([]);
       }
     }
   }
 
+  // Salva os favoritos no cache local
   private saveFavorites(favoriteIds: string[]): void {
     localStorage.setItem(this.FAVORITES_KEY, JSON.stringify(favoriteIds));
     this.favoriteCount.set(favoriteIds.length);
+    this.favoriteIdsSubject.next(favoriteIds);
   }
 
+  /**
+   * Adiciona ou remove uma receita dos favoritos, comunicando com a API.
+   * @param recipeId O ID da receita.
+   */
   toggleFavorite(recipeId: string): Observable<boolean> {
     const currentFavorites = this.favoriteIdsSubject.value;
-    const index = currentFavorites.indexOf(recipeId);
-    let newFavorites: string[];
-    let isFavorited: boolean;
+    const isCurrentlyFavorite = currentFavorites.includes(recipeId);
 
-    if (index > -1) {
+    let apiCall: Observable<any>;
+    let newFavorites: string[];
+    let newFavoriteState: boolean;
+
+    if (isCurrentlyFavorite) {
       // Remove dos favoritos
+      apiCall = this.http.delete(`${this.apiUrl}/${recipeId}/unfavorite`);
       newFavorites = currentFavorites.filter(id => id !== recipeId);
-      isFavorited = false;
+      newFavoriteState = false;
     } else {
       // Adiciona aos favoritos
+      apiCall = this.http.post(`${this.apiUrl}/${recipeId}/favorite`, {});
       newFavorites = [...currentFavorites, recipeId];
-      isFavorited = true;
+      newFavoriteState = true;
     }
 
-    this.favoriteIdsSubject.next(newFavorites);
-    this.saveFavorites(newFavorites);
-    
-    // Atualiza o status no serviço de receitas
-    this.recipeService.updateRecipeFavoriteStatus(recipeId, isFavorited);
-
-    return of(isFavorited);
+    return apiCall.pipe(
+      tap(() => {
+        // Se a chamada à API for bem-sucedida, atualizamos o estado local
+        this.saveFavorites(newFavorites);
+      }),
+      map(() => newFavoriteState), // Retorna o novo estado de favorito
+      catchError(this.handleError)
+    );
   }
 
   isFavorite(recipeId: string): Observable<boolean> {
@@ -69,19 +86,15 @@ export class FavoriteService {
     );
   }
 
-  getFavoriteRecipes(): Observable<Recipe[]> {
-    return this.favoriteIds$.pipe(
-      map(favoriteIds => {
-        // Em uma aplicação real, faria uma chamada à API com os IDs
-        // Por agora, filtra das receitas em memória
-        return [];
-      })
-    );
+  // NOTA: Este método deveria ser atualizado para buscar os favoritos da API
+  // quando o utilizador faz login, para sincronizar o estado.
+  syncFavoritesFromApi(favoriteIds: string[]): void {
+    this.saveFavorites(favoriteIds);
   }
 
-  clearAllFavorites(): Observable<void> {
-    this.favoriteIdsSubject.next([]);
-    this.saveFavorites([]);
-    return of(void 0);
+  private handleError(error: any): Observable<never> {
+    console.error('Ocorreu um erro no FavoriteService!', error);
+    const errorMessage = error.error?.message || 'Não foi possível atualizar os favoritos.';
+    return throwError(() => new Error(errorMessage));
   }
 }

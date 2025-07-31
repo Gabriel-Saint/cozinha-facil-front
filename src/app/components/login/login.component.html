@@ -2,21 +2,21 @@
   <div class="login-container">
     <div class="login-box">
       <h1>Acesso ao Painel</h1>
-      <p>Por favor, insira suas credenciais de acesso.</p>
+      <p>Por favor, insira as suas credenciais de acesso.</p>
       
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="input-group">
-          <label for="email">Usuário</label>
+          <!-- CORREÇÃO: O texto foi atualizado -->
+          <label for="loginIdentifier">E-mail ou CPF</label>
           <input 
-            type="email" 
-            id="email" 
-            formControlName="email"
-            placeholder="Digite seu e-mail" 
-            [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+            type="text" 
+            id="loginIdentifier" 
+            formControlName="loginIdentifier"
+            placeholder="Digite o seu e-mail ou CPF" 
+            [class.error]="loginForm.get('loginIdentifier')?.invalid && loginForm.get('loginIdentifier')?.touched"
           />
-          <div class="field-error" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
-            <span *ngIf="loginForm.get('email')?.errors?.['required']">E-mail é obrigatório</span>
-            <span *ngIf="loginForm.get('email')?.errors?.['email']">E-mail inválido</span>
+          <div class="field-error" *ngIf="loginForm.get('loginIdentifier')?.invalid && loginForm.get('loginIdentifier')?.touched">
+            <span *ngIf="loginForm.get('loginIdentifier')?.errors?.['required']">Este campo é obrigatório.</span>
           </div>
         </div>
         
@@ -26,12 +26,11 @@
             type="password" 
             id="password" 
             formControlName="password"
-            placeholder="Digite sua senha"
+            placeholder="Digite a sua senha"
             [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
           />
           <div class="field-error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-            <span *ngIf="loginForm.get('password')?.errors?.['required']">Senha é obrigatória</span>
-            <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Senha deve ter pelo menos 6 caracteres</span>
+            <span *ngIf="loginForm.get('password')?.errors?.['required']">A senha é obrigatória.</span>
           </div>
         </div>
         
@@ -43,8 +42,12 @@
           [disabled]="loginForm.invalid || isLoading()"
         >
           <span *ngIf="!isLoading()">Entrar</span>
-          <span *ngIf="isLoading()">Entrando...</span>
+          <span *ngIf="isLoading()">A entrar...</span>
         </button>
+
+        <div class="register-link">
+          <p>Ainda não tem uma conta? <a routerLink="/register">Registe-se</a></p>
+        </div>
       </form>
     </div>
   </div>

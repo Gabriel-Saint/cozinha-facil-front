@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api' // URL da sua API NestJS/Firebase a rodar localmente
+  apiUrl: 'https://ea9e344d0e65.ngrok-free.app' // URL da sua API NestJS/Firebase a rodar localmente
 };

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, delay } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -12,13 +12,31 @@ export class PaymentService {
 
   constructor(private http: HttpClient) {}
 
-  // Este método será chamado pelo UpgradeProComponent
+  /**
+   * Processa o pagamento para um utilizador já logado que está a fazer o upgrade para o plano Pro.
+   * @param paymentData - Os dados do pagamento retornados pelo Checkout Brick.
+   */
   processProPayment(paymentData: any): Observable<any> {
-    // Em produção, esta seria a chamada real à API
-    // return this.http.post(`${this.apiUrl}/process-payment-pro`, { paymentData });
+    // A chamada real à API agora está ativa.
+    return this.http.post(`${this.apiUrl}/process-payment-pro`, { paymentData })
+      .pipe(catchError(this.handleError));
+  }
 
-    // Simulação para desenvolvimento
-    console.log("A enviar para o back-end:", { paymentData });
-    return of({ status: 'approved', id: 'mock_payment_123' }).pipe(delay(1500));
+  /**
+   * Processa o pagamento para um novo cliente na página de vendas pública (Plano Básico).
+   * @param paymentData - Os dados do pagamento retornados pelo Checkout Brick.
+   * @param email - O e-mail que o cliente inseriu.
+   */
+  processPublicCheckout(paymentData: any, email: string): Observable<any> {
+    const payload = { paymentData, email };
+    // A chamada real à API agora está ativa.
+    return this.http.post(`${this.apiUrl}/public-checkout`, payload)
+      .pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: any): Observable<never> {
+    console.error('Ocorreu um erro no PaymentService!', error);
+    const errorMessage = error.error?.message || 'Não foi possível processar o seu pagamento.';
+    return throwError(() => new Error(errorMessage));
   }
 }

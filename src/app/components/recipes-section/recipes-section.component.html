@@ -4,7 +4,7 @@
     <span class="section-tag">{{ filteredRecipes().length }} receitas</span>
   </div>
 
-  <!-- NOVOS SEPARADORES DE NÍVEL DE ACESSO -->
+  <!-- SEPARADORES DE NÍVEL DE ACESSO -->
   <div class="access-level-tabs">
     <button 
       class="tab" 
@@ -20,12 +20,23 @@
     </button>
   </div>
   
-  <div class="category-grid">
-    <!-- ... (seu código de filtros de categoria existente) ... -->
-  </div>
-  
-  <!-- LÓGICA DE VISUALIZAÇÃO -->
+  <!-- LÓGICA DE VISUALIZAÇÃO PRINCIPAL -->
   <ng-container *ngIf="selectedAccessLevel() === 'PUBLIC' || isPro(); else upgradePrompt">
+    
+    <!-- FILTRO DE CATEGORIAS (CÓDIGO RESTAURADO) -->
+    <div class="category-grid">
+      <div 
+        *ngFor="let category of categories()" 
+        class="category-card"
+        [class.active]="selectedCategory() === category.id"
+        (click)="onCategorySelect(category.id)"
+      >
+        <span *ngIf="category.emoji">{{ category.emoji }}</span>
+        {{ category.name }}
+      </div>
+    </div>
+    
+    <!-- LISTA DE RECEITAS -->
     <div class="recipes-list" *ngIf="filteredRecipes().length > 0">
       <app-recipe-card 
         *ngFor="let recipe of filteredRecipes()"

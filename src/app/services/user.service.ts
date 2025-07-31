@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { User } from '../models/user.model';
-// import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = `http://localhost:3000/users/users`; // Ex: http://localhost:3000/users
-//   private apiUrl = `${environment.apiUrl}/users`; // Ex: http://localhost:3000/users
+  // CORREÇÃO: O URL base agora vem do ficheiro de ambiente e aponta para a rota correta.
+  private apiUrl = `${environment.apiUrl}/users`; 
 
   constructor(private http: HttpClient) {}
 

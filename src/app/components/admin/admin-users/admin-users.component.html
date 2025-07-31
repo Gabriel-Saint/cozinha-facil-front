@@ -29,9 +29,8 @@
         </td>
         <td>{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
         <td class="actions-cell">
-          <!-- O botão "Editar" agora abre o modal -->
           <button class="btn-action edit" (click)="openEditModal(user)" title="Editar Utilizador">Editar</button>
-          <button class="btn-action delete" (click)="onDeleteUser(user.id)" title="Apagar Utilizador">Apagar</button>
+          <button class="btn-action delete" (click)="openDeleteConfirmModal(user.id)" title="Apagar Utilizador">Apagar</button>
         </td>
       </tr>
     </tbody>
@@ -42,10 +41,19 @@
   A carregar lista de utilizadores...
 </div>
 
-<!-- O Modal de Edição de Utilizador -->
+<!-- Modal de Edição de Utilizador -->
 <app-admin-user-edit-modal
-  *ngIf="isModalOpen() && selectedUser()"
+  *ngIf="isEditModalOpen() && selectedUser()"
   [user]="selectedUser()!"
-  (closeModal)="closeModal()"
+  (closeModal)="closeEditModal()"
   (userUpdated)="onUserUpdated()"
 ></app-admin-user-edit-modal>
+
+<!-- Modal de Confirmação para Apagar -->
+<app-confirmation-modal
+  *ngIf="isConfirmDeleteModalOpen()"
+  title="Confirmar Exclusão"
+  message="Tem a certeza que quer apagar este utilizador? Esta ação irá desativar a sua conta."
+  (confirm)="onConfirmDelete()"
+  (cancel)="closeDeleteConfirmModal()"
+></app-confirmation-modal>
